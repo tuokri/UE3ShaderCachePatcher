@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UELib;
 
 namespace UE3ShaderCachePatcher
 {
@@ -20,6 +21,8 @@ namespace UE3ShaderCachePatcher
     /// </summary>
     public partial class MainWindow : Window
     {
+        private UnrealPackage? _package;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -44,18 +47,12 @@ namespace UE3ShaderCachePatcher
 
                 fileNameBlock.Text = dialog.FileName;
 
-                lstShaderCacheObjects.Items.Add("SeekFreeShaderCache");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
-                lstShaderCacheObjects.Items.Add("asd");
+                _package = UnrealLoader.LoadFullPackage(dialog.FileName);
+                var exports = _package.Exports;
+                var pkgShaderCacheObjects = exports.FindAll(item =>
+                    item.ClassName.Equals("ShaderCache", StringComparison.OrdinalIgnoreCase));
+
+                pkgShaderCacheObjects.ForEach(obj => lstShaderCacheObjects.Items.Add(obj));
 
                 lstTargetObjects.Items.Add("someTargetObject");
             }
