@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UELib;
+using UELib.Core;
 
 namespace UE3ShaderCachePatcher
 {
@@ -28,34 +29,69 @@ namespace UE3ShaderCachePatcher
             InitializeComponent();
         }
 
-        private void ButtonSelectFile_Click(object sender, RoutedEventArgs e)
+        private void BtnSelectFile_Click(object sender, RoutedEventArgs e)
         {
             // Configure open file dialog box
-            var dialog = new Microsoft.Win32.OpenFileDialog();
-            // dialog.FileName = "Document"; // Default file name
-            dialog.DefaultExt = ".u"; // Default file extension
-            dialog.Filter = "UE3 script packages (.u)|*.u"; // Filter files by extension
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                // dialog.FileName = "Document"; // Default file name
+                DefaultExt = ".u", // Default file extension
+                Filter = "UE3 script packages (.u)|*.u" // Filter files by extension
+            };
 
             // Show open file dialog box
-            bool? result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
 
             // Process open file dialog box results
             if (result == true)
             {
-                lstShaderCacheObjects.Items.Clear();
-                lstTargetObjects.Items.Clear();
+                LstShaderCacheObjects.Items.Clear();
+                LstTargetObjects.Items.Clear();
+                LstTargetObjectDefaultProperties.Items.Clear();
 
-                fileNameBlock.Text = dialog.FileName;
+                FileNameBlock.Text = dialog.FileName;
 
                 _package = UnrealLoader.LoadFullPackage(dialog.FileName);
-                var exports = _package.Exports;
-                var pkgShaderCacheObjects = exports.FindAll(item =>
+                var pkgShaderCacheObjects = _package.Exports.FindAll(item =>
                     item.ClassName.Equals("ShaderCache", StringComparison.OrdinalIgnoreCase));
+                pkgShaderCacheObjects.Sort((item1, item2) =>
+                    string.Compare(item1.ObjectName, item2.ObjectName, StringComparison.Ordinal));
+                pkgShaderCacheObjects.ForEach(obj => LstShaderCacheObjects.Items.Add(obj));
 
-                pkgShaderCacheObjects.ForEach(obj => lstShaderCacheObjects.Items.Add(obj));
-
-                lstTargetObjects.Items.Add("someTargetObject");
+                var targetObjects = _package.Objects.FindAll(obj =>
+                    !obj.GetClassName().Equals("ShaderCache", StringComparison.OrdinalIgnoreCase));
+                targetObjects.Sort((item1, item2) =>
+                    string.Compare(item1.Name, item2.Name, StringComparison.Ordinal));
+                targetObjects.ForEach(obj => LstTargetObjects.Items.Add(obj));
             }
+        }
+
+        private void LstTargetObjects_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            LstTargetObjectDefaultProperties.Items.Clear();
+
+            if (LstTargetObjects.SelectedItem == null)
+            {
+                return;
+            }
+
+            var obj = (UObject)LstTargetObjects.SelectedItem;
+
+            if (obj.Properties == null)
+            {
+                obj.BeginDeserializing();
+            }
+
+            var props = obj.Properties;
+            props?.Sort((prop1, prop2) =>
+                string.Compare(prop1.Name, prop2.Name, StringComparison.Ordinal));
+            props?.ForEach(prop => LstTargetObjectDefaultProperties.Items.Add(prop.Name));
+        }
+
+        // https://stackoverflow.com/questions/9288507/disabling-button-based-on-multiple-properties-im-using-multidatatrigger-and-mu
+
+        private void BtnPatch_Click(object sender, RoutedEventArgs e)
+        {
         }
     }
 }

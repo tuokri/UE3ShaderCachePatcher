@@ -12,6 +12,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -19,10 +20,10 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,5,0,5">
-            <Button x:Name="btnSelectFile" Click="ButtonSelectFile_Click">Select File</Button>
+            <Button x:Name="BtnSelectFile" Click="BtnSelectFile_Click">Select File</Button>
 
             <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,5,0,0">
-                <TextBlock  x:Name="fileNameBlock" TextWrapping="Wrap" Text="Select a script package file to patch..." TextAlignment="Center"/>
+                <TextBlock  x:Name="FileNameBlock" TextWrapping="Wrap" Text="Select a script package file to patch..." TextAlignment="Center"/>
             </Border>
         </StackPanel>
 
@@ -38,7 +39,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Label Grid.Row="0" Content="Source ShaderCache object" Margin="2,2,2,2" Grid.ColumnSpan="2"/>
-                <ListBox Grid.Row="1" x:Name="lstShaderCacheObjects" Margin="2,2,2,2" Grid.ColumnSpan="2"/>
+                <ListBox Grid.Row="1" x:Name="LstShaderCacheObjects" Margin="2,2,2,2" Grid.ColumnSpan="2"/>
             </Grid>
         </Border>
 
@@ -50,13 +51,19 @@
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Content="Dummy target object to patch ShaderCache object reference to" Margin="2"/>
-                <ListBox Grid.Row="1" x:Name="lstTargetObjects" Margin="2"/>
+                <Label Grid.Row="0" Content="Dummy target object" Margin="2"/>
+                <ListBox Grid.Row="1" x:Name="LstTargetObjects" SelectionChanged="LstTargetObjects_OnSelectionChanged" Margin="2"/>
+
+                <Label Grid.Row="0" Grid.Column="1" Content="Dummy property to patch ShaderCache reference to" Margin="2"/>
+                <ListBox Grid.Row="1" Grid.Column="1" x:Name="LstTargetObjectDefaultProperties" Margin="2"/>
             </Grid>
         </Border>
+
+        <Button Grid.Row="3" x:Name="BtnPatch" Click="BtnPatch_Click" IsEnabled="False" Margin="0,5,0,5">Patch...</Button>
 
     </Grid>
 </Window>
