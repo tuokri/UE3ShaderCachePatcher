@@ -5,8 +5,34 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UE3ShaderCachePatcher"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="UE3 Shader Cache Patcher" Height="450" Width="800"  MinHeight="450" MinWidth="800">
+    <Grid Margin="10">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,5,0,0">
+            <Button x:Name="btnSelectFile" Click="ButtonSelectFile_Click">Select File</Button>
+
+            <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}" Margin="0,5,0,0">
+                <TextBlock  x:Name="fileNameBlock" TextWrapping="Wrap" Text="Select a script package file to patch..." TextAlignment="Center"/>
+            </Border>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <ListBox x:Name="lstShaderCacheObjects" Margin="0,5,0,0"/>    
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <ListBox x:Name="lstTargetObjects" Margin="0,5,0,0"/>
+        </Grid>
 
     </Grid>
 </Window>
