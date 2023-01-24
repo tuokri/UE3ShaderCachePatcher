@@ -25,6 +25,7 @@
             <RowDefinition Height="2*" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -131,5 +132,41 @@
             Patch File
         </Button>
 
+        <Border Grid.Row="5" BorderThickness="1"
+                BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"
+                Margin="0,5,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock>
+                    <TextBlock
+                        Text="By tuokri / fluudah"
+                        HorizontalAlignment="Left"
+                        Padding="2" />
+                </TextBlock>
+
+                <TextBlock Grid.Column="1" HorizontalAlignment="Center" Padding="2">
+                    <Hyperlink NavigateUri="https://steamcommunity.com/id/fluudah/"
+                               RequestNavigate="Hyperlink_RequestNavigate">
+                        <TextBlock
+                            Text="https://steamcommunity.com/id/fluudah/" />
+                    </Hyperlink>
+                </TextBlock>
+
+                <TextBlock Grid.Column="2" HorizontalAlignment="Right" Padding="2">
+                    <Hyperlink NavigateUri="https://github.com/tuokri/"
+                               RequestNavigate="Hyperlink_RequestNavigate">
+                        <TextBlock
+                            Text="https://github.com/tuokri/" />
+                    </Hyperlink>
+                </TextBlock>
+            </Grid>
+        </Border>
+
     </Grid>
+
 </Window>

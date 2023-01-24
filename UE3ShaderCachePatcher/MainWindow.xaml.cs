@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using UELib;
 using UELib.Core;
 
@@ -162,6 +164,24 @@ namespace UE3ShaderCachePatcher
             // Disable all UI selections.
             // Patch file.
             // Re-load file and update UI.
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            // for .NET Core you need to add UseShellExecute = true
+            // see https://learn.microsoft.com/dotnet/api/system.diagnostics.processstartinfo.useshellexecute#property-value
+
+            using (var proc = new Process())
+            {
+                proc.StartInfo = new ProcessStartInfo(e.Uri.AbsoluteUri)
+                {
+                    UseShellExecute = true
+                };
+
+                proc.Start();
+            }
+
+            e.Handled = true;
         }
     }
 
