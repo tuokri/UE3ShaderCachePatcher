@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using UELib;
 using UELib.Core;
 
@@ -22,43 +13,63 @@ namespace UE3ShaderCachePatcher
     /// </summary>
     public partial class MainWindow : Window
     {
-        private UnrealPackage? _package;
+        private readonly ObjectViewModel _objectViewModel;
 
-        public MainWindow()
+        public string WindowTitle
         {
+            get => (string)GetValue(TitleProperty);
+            init => SetValue(TitleProperty, value);
+        }
+
+        public new static readonly DependencyProperty TitleProperty =
+            DependencyProperty.Register(nameof(WindowTitle), typeof(string),
+                typeof(MainWindow), new UIPropertyMetadata("", null));
+
+        public MainWindow(ObjectViewModel objectViewModel)
+        {
+            _objectViewModel = objectViewModel;
+
             InitializeComponent();
+
+            WindowMainGrid.DataContext = _objectViewModel.ObjectData;
+            DataContext = this;
+
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            WindowTitle = $"UE3 Shader Cache Patcher {version}";
         }
 
         private void BtnSelectFile_Click(object sender, RoutedEventArgs e)
         {
-            // Configure open file dialog box
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
-                // dialog.FileName = "Document"; // Default file name
-                DefaultExt = ".u", // Default file extension
-                Filter = "UE3 script packages (.u)|*.u" // Filter files by extension
+                DefaultExt = ".u",
+                Filter = "UE3 script packages (.u)|*.u"
             };
 
-            // Show open file dialog box
             var result = dialog.ShowDialog();
 
-            // Process open file dialog box results
             if (result == true)
             {
+                _objectViewModel.ObjectData.Package = null;
+                _objectViewModel.ObjectData.ShaderCacheObject = null;
+                _objectViewModel.ObjectData.TargetObject = null;
+                _objectViewModel.ObjectData.TargetProperty = null;
+                _objectViewModel.ObjectData.DefaultProperties.Clear();
+                _objectViewModel.ObjectData.DefaultPropertiesNames.Clear();
+
                 LstShaderCacheObjects.Items.Clear();
                 LstTargetObjects.Items.Clear();
-                LstTargetObjectDefaultProperties.Items.Clear();
 
-                FileNameBlock.Text = dialog.FileName;
+                FileNameBlock.Text = $"Selected file: '{dialog.FileName}'";
 
-                _package = UnrealLoader.LoadFullPackage(dialog.FileName);
-                var pkgShaderCacheObjects = _package.Exports.FindAll(item =>
+                _objectViewModel.ObjectData.Package = UnrealLoader.LoadFullPackage(dialog.FileName);
+                var pkgShaderCacheObjects = _objectViewModel.ObjectData.Package.Exports.FindAll(item =>
                     item.ClassName.Equals("ShaderCache", StringComparison.OrdinalIgnoreCase));
                 pkgShaderCacheObjects.Sort((item1, item2) =>
                     string.Compare(item1.ObjectName, item2.ObjectName, StringComparison.Ordinal));
                 pkgShaderCacheObjects.ForEach(obj => LstShaderCacheObjects.Items.Add(obj));
 
-                var targetObjects = _package.Objects.FindAll(obj =>
+                var targetObjects = _objectViewModel.ObjectData.Package.Objects.FindAll(obj =>
                     !obj.GetClassName().Equals("ShaderCache", StringComparison.OrdinalIgnoreCase));
                 targetObjects.Sort((item1, item2) =>
                     string.Compare(item1.Name, item2.Name, StringComparison.Ordinal));
@@ -66,32 +77,98 @@ namespace UE3ShaderCachePatcher
             }
         }
 
+        private void LstShaderCacheObjects_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (LstShaderCacheObjects.SelectedItem == null)
+            {
+                _objectViewModel.ObjectData.ShaderCacheObject = null;
+                return;
+            }
+
+            var exportTableItem = (UExportTableItem)LstShaderCacheObjects.SelectedItem;
+            var obj = exportTableItem.Object;
+
+            if (obj == null)
+            {
+                _objectViewModel.ObjectData.ShaderCacheObject = null;
+                return;
+            }
+
+            obj.BeginDeserializing();
+
+            _objectViewModel.ObjectData.ShaderCacheObject = obj;
+        }
+
         private void LstTargetObjects_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            LstTargetObjectDefaultProperties.Items.Clear();
+            _objectViewModel.ObjectData.DefaultProperties = new DefaultPropertiesCollection();
 
             if (LstTargetObjects.SelectedItem == null)
             {
+                _objectViewModel.ObjectData.TargetObject = null;
+                _objectViewModel.ObjectData.TargetProperty = null;
                 return;
             }
 
             var obj = (UObject)LstTargetObjects.SelectedItem;
 
-            if (obj.Properties == null)
-            {
-                obj.BeginDeserializing();
-            }
+            obj.BeginDeserializing();
 
             var props = obj.Properties;
-            props?.Sort((prop1, prop2) =>
+
+            if (props == null)
+            {
+                return;
+            }
+
+            props.Sort((prop1, prop2) =>
                 string.Compare(prop1.Name, prop2.Name, StringComparison.Ordinal));
-            props?.ForEach(prop => LstTargetObjectDefaultProperties.Items.Add(prop.Name));
+            // props.ForEach(prop => LstTargetObjectDefaultProperties.Items.Add(prop));
+
+            _objectViewModel.ObjectData.TargetObject = obj;
+            _objectViewModel.ObjectData.DefaultProperties = props;
         }
 
-        // https://stackoverflow.com/questions/9288507/disabling-button-based-on-multiple-properties-im-using-multidatatrigger-and-mu
-
-        private void BtnPatch_Click(object sender, RoutedEventArgs e)
+        private void LstTargetObjectDefaultProperties_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (LstTargetObjectDefaultProperties.SelectedItem == null)
+            {
+                _objectViewModel.ObjectData.TargetProperty = null;
+                return;
+            }
+
+            var propName = (UName)LstTargetObjectDefaultProperties.SelectedItem;
+            var prop = _objectViewModel.ObjectData.DefaultProperties.Find(
+                property => string.Equals(property.Name, propName,
+                    StringComparison.OrdinalIgnoreCase));
+
+            if (prop == null)
+            {
+                return;
+            }
+
+            _objectViewModel.ObjectData.TargetProperty = prop;
         }
+
+        private void ValidatePatchButton_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = LstTargetObjects.SelectedItem != null &&
+                           LstTargetObjectDefaultProperties.SelectedItem != null &&
+                           LstShaderCacheObjects.SelectedItem != null;
+        }
+
+        private void ValidatePatchButton_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            // Disable all UI selections.
+            // Patch file.
+            // Re-load file and update UI.
+        }
+    }
+
+    public static class Commands
+    {
+        public static readonly RoutedUICommand ValidatePatchButton =
+            new("Validate Patch Button", "ValidatePatchButton",
+                typeof(MainWindow));
     }
 }

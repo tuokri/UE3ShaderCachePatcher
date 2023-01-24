@@ -5,13 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UE3ShaderCachePatcher"
         mc:Ignorable="d"
-        Title="UE3 Shader Cache Patcher" Height="450" Width="800"  MinHeight="450" MinWidth="800">
-    <Grid Margin="10">
+        Title="{Binding WindowTitle, RelativeSource={RelativeSource Mode=Self}}"
+        Height="600"
+        Width="900"
+        MinHeight="450"
+        MinWidth="800">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="local:Commands.ValidatePatchButton"
+                        CanExecute="ValidatePatchButton_CanExecute"
+                        Executed="ValidatePatchButton_Executed" />
+    </Window.CommandBindings>
+
+    <Grid Name="WindowMainGrid" Margin="10" d:DataContext="{d:DesignInstance Type=local:ObjectDataModel}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
@@ -20,14 +32,20 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,5,0,5">
-            <Button x:Name="BtnSelectFile" Click="BtnSelectFile_Click">Select File</Button>
+            <Button x:Name="BtnSelectFile" Click="BtnSelectFile_Click">Select File...</Button>
 
-            <Border BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,5,0,0">
-                <TextBlock  x:Name="FileNameBlock" TextWrapping="Wrap" Text="Select a script package file to patch..." TextAlignment="Center"/>
+            <Border BorderThickness="1"
+                    BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"
+                    Margin="0,5,0,0">
+                <TextBlock x:Name="FileNameBlock" TextWrapping="Wrap"
+                           Text="Select a script package file (.u) to begin the patching process."
+                           TextAlignment="Center" />
             </Border>
         </StackPanel>
 
-        <Border Grid.Row="1" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,5,0,5">
+        <Border Grid.Row="1" BorderThickness="1"
+                BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"
+                Margin="0,5,0,5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -38,12 +56,15 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Content="Source ShaderCache object" Margin="2,2,2,2" Grid.ColumnSpan="2"/>
-                <ListBox Grid.Row="1" x:Name="LstShaderCacheObjects" Margin="2,2,2,2" Grid.ColumnSpan="2"/>
+                <Label Grid.Row="0" Content="Source ShaderCache object" Margin="2,2,2,2" />
+                <ListBox Grid.Row="1" x:Name="LstShaderCacheObjects" Margin="2,2,2,2"
+                         SelectionChanged="LstShaderCacheObjects_OnSelectionChanged" />
             </Grid>
         </Border>
 
-        <Border Grid.Row="2" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Margin="0,5,0,5">
+        <Border Grid.Row="2" BorderThickness="1"
+                BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"
+                Margin="0,5,0,5">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto" />
@@ -55,15 +76,60 @@
                     <ColumnDefinition Width="2*" />
                 </Grid.ColumnDefinitions>
 
-                <Label Grid.Row="0" Content="Dummy target object" Margin="2"/>
-                <ListBox Grid.Row="1" x:Name="LstTargetObjects" SelectionChanged="LstTargetObjects_OnSelectionChanged" Margin="2"/>
+                <Label Grid.Row="0" Content="Dummy target object" Margin="2" />
+                <ListBox Grid.Row="1" Grid.Column="0" x:Name="LstTargetObjects"
+                         SelectionChanged="LstTargetObjects_OnSelectionChanged"
+                         Margin="2" />
 
-                <Label Grid.Row="0" Grid.Column="1" Content="Dummy property to patch ShaderCache reference to" Margin="2"/>
-                <ListBox Grid.Row="1" Grid.Column="1" x:Name="LstTargetObjectDefaultProperties" Margin="2"/>
+                <Label Grid.Row="0" Grid.Column="1" Content="Dummy property to patch ShaderCache reference to"
+                       Margin="2" />
+                <ListBox Grid.Row="1" Grid.Column="1"
+                         x:Name="LstTargetObjectDefaultProperties"
+                         IsSynchronizedWithCurrentItem="true"
+                         ItemsSource="{Binding DefaultPropertiesNames}"
+                         Margin="2"
+                         SelectionChanged="LstTargetObjectDefaultProperties_OnSelectionChanged" />
             </Grid>
         </Border>
 
-        <Button Grid.Row="3" x:Name="BtnPatch" Click="BtnPatch_Click" IsEnabled="False" Margin="0,5,0,5">Patch...</Button>
+        <Border Grid.Row="3" BorderThickness="1"
+                BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"
+                Margin="0,5,0,5">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="2*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="{Binding TargetObjectBeforeText}"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap"
+                           Padding="2"
+                           MinHeight="40" />
+                <Label Grid.Column="1" Content="-->"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Padding="2" />
+                <TextBlock Grid.Column="2"
+                           Text="{Binding TargetObjectAfterText}"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           TextWrapping="Wrap"
+                           Padding="2"
+                           MinHeight="40" />
+
+            </Grid>
+        </Border>
+
+        <Button Grid.Row="4" x:Name="BtnPatch"
+                Command="local:Commands.ValidatePatchButton"
+                Margin="0,5,0,5">
+            Patch File
+        </Button>
 
     </Grid>
 </Window>
