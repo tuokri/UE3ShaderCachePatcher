@@ -11,6 +11,8 @@
         <PackageLicenseFile>LICENSE</PackageLicenseFile>
         <Title>UE3ShaderCachePatcher</Title>
         <Authors>Tuomo Kriikkula</Authors>
+        <ApplicationIcon />
+        <StartupObject />
     </PropertyGroup>
 
     <ItemGroup>
