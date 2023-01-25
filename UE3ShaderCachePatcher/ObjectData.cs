@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using UELib;
 using UELib.Core;
+using UELib.Types;
 
 namespace UE3ShaderCachePatcher;
 
 public class ObjectDataModel : BaseDataModel
 {
+    private const string TargetObjectTextDefault = "Waiting for object selection...";
+
     private UnrealPackage? _package;
     private UObject? _shaderCacheObject;
     private UObject? _targetObject;
@@ -13,13 +16,13 @@ public class ObjectDataModel : BaseDataModel
     private DefaultPropertiesCollection _defaultProperties;
     private List<UName> _defaultPropertiesNames;
 
-    private string _targetObjectBeforeText;
-    private string _targetObjectAfterText;
+    private string _targetObjectBeforeText = TargetObjectTextDefault;
+    private string _targetObjectAfterText = TargetObjectTextDefault;
 
     public List<UName> DefaultPropertiesNames
     {
         get => _defaultPropertiesNames;
-        set
+        private set
         {
             _defaultPropertiesNames = value;
             NotifyPropertyChanged();
@@ -89,22 +92,28 @@ public class ObjectDataModel : BaseDataModel
         var pkgName = _package?.PackageName ?? "???";
         var objName = _targetObject?.Name ?? "???";
         var shaderObjName = _shaderCacheObject?.Name ?? "???";
-        var shaderClass = _shaderCacheObject?.GetClassName() ?? "ShaderCache";
+        var shaderClass = _shaderCacheObject?.Class?.Name ?? "ShaderCache";
         var targetPropName = _targetProperty?.Name ?? "???";
-        var targetPropValue = _targetProperty?.Value ?? "???";
+
+        var targetPropValue = $"{targetPropName}=???";
+
+        if (_targetProperty?.Type == PropertyType.ObjectProperty)
+        {
+            targetPropValue = _targetProperty.Decompile();
+        }
 
         TargetObjectBeforeText =
-            $"{pkgName}.{objName}.{targetPropName} = {targetPropValue}";
+            $"{pkgName}.{objName}.{targetPropValue}";
 
         TargetObjectAfterText =
             $"{pkgName}.{objName}.{targetPropName}" +
-            $" = {shaderClass}'{pkgName}.{shaderObjName}'";
+            $"={shaderClass}'{pkgName}.{shaderObjName}'";
     }
 
     public string TargetObjectBeforeText
     {
         get => _targetObjectBeforeText;
-        set
+        private set
         {
             _targetObjectBeforeText = value;
             NotifyPropertyChanged();
@@ -114,18 +123,21 @@ public class ObjectDataModel : BaseDataModel
     public string TargetObjectAfterText
     {
         get => _targetObjectAfterText;
-        set
+        private set
         {
             _targetObjectAfterText = value;
             NotifyPropertyChanged();
         }
     }
 
+    public void ResetTargetObjectTextValues()
+    {
+        TargetObjectBeforeText = TargetObjectTextDefault;
+        TargetObjectAfterText = TargetObjectTextDefault;
+    }
+
     public ObjectDataModel()
     {
-        _targetObjectBeforeText = "Waiting for object selection...";
-        _targetObjectAfterText = "Waiting for object selection...";
-
         _defaultProperties = new DefaultPropertiesCollection();
         _defaultPropertiesNames = new List<UName>();
 

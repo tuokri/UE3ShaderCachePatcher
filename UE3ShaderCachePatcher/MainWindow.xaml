@@ -5,6 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UE3ShaderCachePatcher"
         mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:showMeTheXaml="clr-namespace:ShowMeTheXAML;assembly=ShowMeTheXAML"
+        TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+        Background="{DynamicResource MaterialDesignPaper}"
+        TextElement.FontWeight="Medium"
+        TextElement.FontSize="14"
+        FontFamily="{materialDesign:MaterialDesignFont}"
         Title="{Binding WindowTitle, RelativeSource={RelativeSource Mode=Self}}"
         Height="600"
         Width="900"
@@ -17,7 +24,9 @@
                         Executed="ValidatePatchButton_Executed" />
     </Window.CommandBindings>
 
-    <Grid Name="WindowMainGrid" Margin="10" d:DataContext="{d:DesignInstance Type=local:ObjectDataModel}">
+    <Grid Name="WindowMainGrid"
+          Margin="10"
+          d:DataContext="{d:DesignInstance Type=local:ObjectDataModel}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -33,13 +42,19 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,5,0,5">
-            <Button x:Name="BtnSelectFile" Click="BtnSelectFile_Click">Select File...</Button>
+            <Button x:Name="BtnSelectFile"
+                    Click="BtnSelectFile_Click">
+                Select File...
+            </Button>
 
             <Border BorderThickness="1"
-                    BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"
+                    BorderBrush="{DynamicResource 
+                    {x:Static SystemColors.AppWorkspaceBrushKey}}"
                     Margin="0,5,0,0">
-                <TextBlock x:Name="FileNameBlock" TextWrapping="Wrap"
-                           Text="Select a script package file (.u) to begin the patching process."
+                <TextBlock Name="TopBarStatusTextBlock"
+                           TextWrapping="Wrap"
+                           d:DataContext="{d:DesignInstance Type=local:MainWindow}"
+                           Text="{Binding TopBarStatusString}"
                            TextAlignment="Center" />
             </Border>
         </StackPanel>
@@ -129,7 +144,7 @@
         <Button Grid.Row="4" x:Name="BtnPatch"
                 Command="local:Commands.ValidatePatchButton"
                 Margin="0,5,0,5">
-            Patch File
+            Patch File...
         </Button>
 
         <Border Grid.Row="5" BorderThickness="1"
@@ -140,30 +155,38 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock>
+                <TextBlock Padding="2">
                     <TextBlock
                         Text="By tuokri / fluudah"
-                        HorizontalAlignment="Left"
-                        Padding="2" />
+                        HorizontalAlignment="Left" />
                 </TextBlock>
 
                 <TextBlock Grid.Column="1" HorizontalAlignment="Center" Padding="2">
                     <Hyperlink NavigateUri="https://steamcommunity.com/id/fluudah/"
                                RequestNavigate="Hyperlink_RequestNavigate">
                         <TextBlock
-                            Text="https://steamcommunity.com/id/fluudah/" />
+                            Text="steamcommunity.com/id/fluudah" />
                     </Hyperlink>
                 </TextBlock>
 
-                <TextBlock Grid.Column="2" HorizontalAlignment="Right" Padding="2">
+                <TextBlock Grid.Column="2" HorizontalAlignment="Center" Padding="2">
                     <Hyperlink NavigateUri="https://github.com/tuokri/"
                                RequestNavigate="Hyperlink_RequestNavigate">
                         <TextBlock
-                            Text="https://github.com/tuokri/" />
+                            Text="github.com/tuokri" />
                     </Hyperlink>
                 </TextBlock>
+
+                <TextBlock Grid.Column="3" HorizontalAlignment="Right" Padding="2">
+                    <Hyperlink NavigateUri="https://github.com/tuokri/UE3ShaderCachePatcher/blob/master/README.md"
+                               RequestNavigate="Hyperlink_RequestNavigate">
+                        <TextBlock Text="Help" />
+                    </Hyperlink>
+                </TextBlock>
+
             </Grid>
         </Border>
 
