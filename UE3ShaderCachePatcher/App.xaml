@@ -18,7 +18,7 @@
                    TargetType="{x:Type Button}">
             </Style>
 
-            <Style BasedOn="{StaticResource MaterialDesignChoiceChipAccentListBox}"
+            <Style BasedOn="{StaticResource MaterialDesignNavigationPrimaryListBox}"
                    TargetType="{x:Type ListBox}">
             </Style>
 

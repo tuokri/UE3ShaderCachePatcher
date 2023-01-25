@@ -101,7 +101,7 @@
                        Margin="2" />
                 <ListBox Grid.Row="1" Grid.Column="1"
                          x:Name="LstTargetObjectDefaultProperties"
-                         IsSynchronizedWithCurrentItem="true"
+                         IsSynchronizedWithCurrentItem="false"
                          ItemsSource="{Binding DefaultPropertiesNames}"
                          Margin="2"
                          SelectionChanged="LstTargetObjectDefaultProperties_OnSelectionChanged" />
