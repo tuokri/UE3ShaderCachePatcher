@@ -1,7 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using BespokeFusion;
 using Microsoft.Extensions.DependencyInjection;
