@@ -245,9 +245,6 @@ namespace UE3ShaderCachePatcher
                 return;
             }
 
-            var newObjIndex = (int)shaderObj;
-            Debug.Assert(newObjIndex > 0);
-
             var prop = targetObj.Properties.Find(targetProp.Name);
 
             // Get private UDefaultProperty member _PropertyValuePosition.
@@ -275,7 +272,7 @@ namespace UE3ShaderCachePatcher
             if (Debugger.IsAttached)
             {
                 stream.Seek(-4, SeekOrigin.Current);
-                Debug.Assert(stream.ReadInt32() == newObjIndex);
+                Debug.Assert(stream.ReadInt32() == (int)shaderObj);
             }
 
             _objectViewModel.ObjectData.ShaderCacheObject = null;
