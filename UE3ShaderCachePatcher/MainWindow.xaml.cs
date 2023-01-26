@@ -224,7 +224,7 @@ namespace UE3ShaderCachePatcher
                 TxtMessage = { Text = msg },
                 BtnOk = { Content = "OK" },
                 BtnCancel = { Content = "Cancel" },
-                BtnCopyMessage = { IsEnabled = false, Visibility = Visibility.Hidden },
+                BtnCopyMessage = { IsEnabled = false, Visibility = Visibility.Collapsed },
                 Height = 500,
                 Width = 500,
             };
@@ -292,7 +292,8 @@ namespace UE3ShaderCachePatcher
                 TxtTitle = { Text = "Success!" },
                 TxtMessage = { Text = "Package was patched successfully!" },
                 BtnOk = { Content = "OK" },
-                BtnCopyMessage = { IsEnabled = false, Visibility = Visibility.Hidden },
+                BtnCancel = { IsEnabled = false, Visibility = Visibility.Collapsed },
+                BtnCopyMessage = { IsEnabled = false, Visibility = Visibility.Collapsed },
             };
             successMsg.Show();
         }
