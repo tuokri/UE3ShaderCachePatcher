@@ -42,7 +42,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MaterialDesignThemes" Version="4.8.0-ci169" />
+      <PackageReference Include="MaterialDesignThemes" Version="4.8.0-ci183" />
       <PackageReference Include="MaterialMessageBox" Version="4.0.2" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
       <PackageReference Include="ShowMeTheXAML" Version="2.0.0" />
