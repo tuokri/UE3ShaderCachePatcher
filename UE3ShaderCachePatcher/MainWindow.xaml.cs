@@ -57,8 +57,9 @@ namespace UE3ShaderCachePatcher
             DataContext = this;
             TopBarStatusTextBlock.DataContext = this;
 
-            var version = Assembly.GetExecutingAssembly().GetName().Version;
-            WindowTitle = $"UE3 Shader Cache Patcher {version}";
+            var assembly = Assembly.GetExecutingAssembly();
+            var fvi = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+            WindowTitle = $"UE3 Shader Cache Patcher {fvi.FileVersion}";
         }
 
         private void BtnSelectFile_Click(object sender, RoutedEventArgs e)
