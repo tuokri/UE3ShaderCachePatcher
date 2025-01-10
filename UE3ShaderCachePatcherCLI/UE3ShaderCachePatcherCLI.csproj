@@ -12,4 +12,12 @@
         <FileVersion>1.0.0</FileVersion>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Unreal-Library\src\Eliot.UELib.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    </ItemGroup>
+
 </Project>

@@ -39,6 +39,11 @@ Rising Storm 2: Vietnam demo repo: https://github.com/tuokri/RS2-ShaderLoaderMut
 
 Video demo: https://youtu.be/u-m0W_edhj8
 
+## Command Line Tool
+
+A simple command line tool is also included. See [UE3ShaderCachePatcherCLI](./UE3ShaderCachePatcherCLI/)
+for details and usage instructions.
+
 ## Notes
 
 [Material-Message-Box](https://github.com/denpalrius/Material-Message-Box) is used as a submodule
