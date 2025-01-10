@@ -1,4 +1,0 @@
-[submodule "Unreal-Library"]
-	path = Unreal-Library
-	url = git@github.com:tuokri/Unreal-Library.git
-	branch = develop
