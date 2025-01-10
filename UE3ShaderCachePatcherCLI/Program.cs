@@ -203,6 +203,7 @@ void PatchFile(FileInfo file, string shaderCachePath, string objectToPatchPath)
             if (prop.Name == checkObj.Name)
             {
                 Debug.Assert(prop.Value == $"{shaderCache.Class.Name}'{shaderCache.Name}'");
+                break;
             }
         }
     }
