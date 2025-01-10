@@ -39,6 +39,11 @@ Rising Storm 2: Vietnam demo repo: https://github.com/tuokri/RS2-ShaderLoaderMut
 
 Video demo: https://youtu.be/u-m0W_edhj8
 
+## Notes
+
+[Material-Message-Box](https://github.com/denpalrius/Material-Message-Box) is used as a submodule
+to patch it to work properly with MaterialDesignInXamlToolkit >= 5.0.0.
+
 ## Credits
 
 Powered by Unreal-Library from EliotVU: https://github.com/EliotVU/Unreal-Library

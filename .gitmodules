@@ -1,0 +1,9 @@
+[submodule "Unreal-Library"]
+	path = Unreal-Library
+	url = git@github.com:EliotVU/Unreal-Library.git
+[submodule "MaterialDesignInXamlToolkit"]
+	path = MaterialDesignInXamlToolkit
+	url = git@github.com:MaterialDesignInXAML/MaterialDesignInXamlToolkit.git
+[submodule "Material-Message-Box"]
+	path = Material-Message-Box
+	url = git@github.com:denpalrius/Material-Message-Box.git
