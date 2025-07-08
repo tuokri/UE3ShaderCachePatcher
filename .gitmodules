@@ -6,4 +6,4 @@
 	url = git@github.com:MaterialDesignInXAML/MaterialDesignInXamlToolkit.git
 [submodule "Material-Message-Box"]
 	path = Material-Message-Box
-	url = git@github.com:denpalrius/Material-Message-Box.git
+	url = git@github.com:tuokri/Material-Message-Box.git
