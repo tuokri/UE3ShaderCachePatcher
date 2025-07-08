@@ -46,7 +46,7 @@ for details and usage instructions.
 
 ## Notes
 
-[Material-Message-Box](https://github.com/denpalrius/Material-Message-Box) is used as a submodule
+[Material-Message-Box](https://github.com/tuokri/Material-Message-Box) is used as a submodule
 to patch it to work properly with MaterialDesignInXamlToolkit >= 5.0.0.
 
 ## Credits
