@@ -52,3 +52,8 @@ to patch it to work properly with MaterialDesignInXamlToolkit >= 5.0.0.
 ## Credits
 
 Powered by Unreal-Library from EliotVU: https://github.com/EliotVU/Unreal-Library
+
+## Development TODOs
+
+- Write some (unit) tests for the CLI app.
+- Write some (unit) tests for the model part of the GUI app.
