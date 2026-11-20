@@ -151,7 +151,7 @@ void PatchFile(FileInfo file, string shaderCachePath, string objectToPatchPath)
             }
         }
 
-        if (shaderCache != null && objectToPatch == null)
+        if (shaderCache != null && objectToPatch != null)
         {
             break;
         }
